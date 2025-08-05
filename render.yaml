@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: code-unit
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
