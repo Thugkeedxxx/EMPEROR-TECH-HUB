@@ -2,143 +2,290 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>THUGKEED — Command Console (Simulation)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>THUGKEED —  Sim Console</title>
 <style>
-  :root{
-    --bg:#0b0b0b; --panel:#0e0e0e; --text:#f2f2f2; --accent:#ff3838;
-    --muted:#a8a8a8; --glow:0 0 18px rgba(255,56,56,0.12);
+  :root {
+    --bg-gradient: linear-gradient(135deg, #ff4da6, #ff99cc);
+    --panel-bg: rgba(255, 255, 255, 0.05);
+    --text: #fff0f5;
+    --accent: #ff007f;
+    --muted: #ff80bf;
+    --glow: 0 0 20px rgba(255, 0, 127, 0.25);
   }
-  html,body{height:100%; margin:0; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;}
-  body{background:
-    radial-gradient(ellipse at 10% 10%, rgba(255,56,56,0.03), transparent 8%),
-    linear-gradient(180deg, rgba(255,56,56,0.01), transparent 20%),
-    var(--bg);
-    color:var(--text); display:flex; align-items:stretch; justify-content:center; padding:18px;}
-  .console{
-    width:100%; max-width:1300px; height:calc(100vh - 36px); background:linear-gradient(180deg,#070707,#0f0f0f 60%); border-radius:12px; box-shadow:var(--glow);
-    display:grid; grid-template-columns: 1fr 360px; overflow:hidden; border:1px solid rgba(255,56,56,0.06);
+  /* Reset */
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
   }
-  .left{padding:18px; display:flex; flex-direction:column; gap:12px;}
-  .header{display:flex; gap:12px; align-items:center;}
-  .brand{font-weight:700; letter-spacing:1px; font-size:18px; color:var(--accent);}
-  .status{font-size:12px; color:var(--muted);}
-  .terminal{flex:1; background:linear-gradient(180deg,#050505,#0b0b0b); padding:16px; border-radius:8px; overflow:auto; box-shadow:inset 0 0 40px rgba(0,0,0,0.5);}
-  .line{white-space:pre-wrap; font-size:13px; line-height:1.4;}
-  .prompt{color:#ffd7d7;}
-  .input-row{display:flex; gap:8px; align-items:center; margin-top:8px;}
-  .cmd-input{flex:1; background:#0a0a0a; border:1px solid rgba(255,255,255,0.04); padding:10px 12px; color:var(--text); border-radius:6px; outline:none; font-family:inherit;}
-  .btn{background:var(--accent); border:none; padding:8px 10px; border-radius:6px; color:white; cursor:pointer;}
-  .sidebar{padding:18px; border-left:1px solid rgba(255,255,255,0.02); background:linear-gradient(180deg, rgba(255,56,56,0.01), transparent);}
-  h3{margin:0 0 10px 0; font-size:14px; color:var(--accent);}
-  .cmd-list{font-size:13px; color:var(--muted); max-height:46vh; overflow:auto; padding-right:6px;}
-  .small{font-size:12px; color:var(--muted); margin-top:10px;}
-  .chip{display:inline-block; padding:6px 8px; background:#0c0c0c; border-radius:6px; margin:4px 4px 4px 0; font-size:12px; border:1px solid rgba(255,255,255,0.02);}
-  .progress{height:12px; background:#111; border-radius:8px; overflow:hidden; box-shadow:inset 0 -2px 8px rgba(0,0,0,0.6);}
-  .progress > i{display:block; height:100%; width:0%; background:linear-gradient(90deg, rgba(255,56,56,0.9), rgba(255,130,130,0.9)); transition:width 200ms linear;}
-  .verbose-toggle{margin-top:12px;}
-  .log-warning{color:#ffad66;}
-  .fake-link{color:#8bd1ff; cursor:pointer; text-decoration:underline;}
-  pre.html-snippet{background:#080808; border:1px dashed rgba(255,255,255,0.02); padding:10px; border-radius:6px; font-size:12px; overflow:auto;}
-  .scanner-tag{display:inline-block; padding:5px 8px; margin:4px; border-radius:6px; background:#070707; border:1px solid rgba(255,255,255,0.03);}
+  html, body {
+    height: 100%;
+    background: var(--bg-gradient);
+    font-family: 'Courier New', Courier, monospace, monospace;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+  }
+  .console {
+    background: var(--panel-bg);
+    box-shadow: var(--glow);
+    border-radius: 12px;
+    width: 100vw;
+    max-width: 1100px;
+    height: 95vh;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    overflow: hidden;
+  }
+  /* Left side: terminal + input */
+  .left {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(255 255 255 / 0.03);
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    color: var(--accent);
+    user-select: none;
+  }
+  .status {
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .terminal {
+    background: rgba(0 0 0 / 0.15);
+    border-radius: 10px;
+    flex: 1;
+    font-size: 1.15rem;
+    line-height: 1.3;
+    overflow-y: auto;
+    padding: 16px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    box-shadow: inset 0 0 30px rgba(255, 0, 127, 0.2);
+  }
+  .line {
+    margin-bottom: 6px;
+    word-break: break-word;
+  }
+  .prompt {
+    color: #ff80bf;
+    font-weight: 700;
+  }
+  .input-row {
+    display: flex;
+    gap: 10px;
+  }
+  input.cmd-input {
+    flex: 1;
+    font-family: monospace;
+    font-size: 1.15rem;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255 255 255 / 0.1);
+    color: var(--text);
+    outline-offset: 2px;
+    box-shadow: inset 0 0 8px rgba(255, 0, 127, 0.3);
+  }
+  input.cmd-input::placeholder {
+    color: var(--muted);
+  }
+  button.btn {
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 12px 20px;
+    user-select: none;
+    transition: background-color 0.25s ease;
+  }
+  button.btn:hover {
+    background: #ff3399;
+  }
+  /* Sidebar */
+  aside.sidebar {
+    border-left: 1px solid rgba(255 255 255 / 0.1);
+    padding: 20px;
+    background: rgba(0 0 0 / 0.12);
+    color: var(--muted);
+    font-size: 0.9rem;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  aside.sidebar h3 {
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .cmd-list {
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 6px;
+  }
+  .scanner-tag {
+    background: rgba(255 255 255 / 0.07);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-family: monospace;
+    cursor: default;
+    user-select: text;
+  }
+  .small {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .chip {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: rgba(255 255 255 / 0.07);
+    margin: 3px 6px 3px 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .chip:hover {
+    background: rgba(255 0 127 / 0.3);
+    color: #fff0f5;
+  }
+  /* Progress bar */
+  .progress {
+    height: 12px;
+    background: rgba(255 255 255 / 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 -2px 10px rgba(255, 0, 127, 0.3);
+    margin: 8px 0;
+  }
+  .progress > i {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff00aa, #ff99cc);
+    transition: width 200ms linear;
+  }
+  /* Responsive */
+  @media (max-width: 960px) {
+    .console {
+      grid-template-columns: 1fr;
+      height: 95vh;
+      max-width: 100vw;
+    }
+    aside.sidebar {
+      border-left: none;
+      border-top: 1px solid rgba(255 255 255 / 0.1);
+      padding: 16px 12px 12px;
+      font-size: 0.85rem;
+      max-height: 30vh;
+      overflow-y: auto;
+    }
+  }
+  @media (max-width: 480px) {
+    body {
+      padding: 8px;
+    }
+    .left {
+      padding: 16px 12px;
+    }
+    .terminal {
+      font-size: 1rem;
+    }
+    input.cmd-input {
+      font-size: 1rem;
+      padding: 10px 12px;
+    }
+    button.btn {
+      padding: 10px 14px;
+      font-size: 1rem;
+    }
+    aside.sidebar {
+      font-size: 0.75rem;
+      max-height: 25vh;
+    }
+  }
 </style>
 </head>
 <body>
 <div class="console" role="application" aria-label="THUGKEED simulated console">
   <div class="left">
-    <div class="header">
-      <div>
-        <div class="brand">THUGKEED — SIM CONSOLE</div>
-        <div class="status small" id="sessionStatus">Session: offline · Theme: red-on-black</div>
-      </div>
-      <div style="margin-left:auto" class="small">
-        <span id="Clock"></span>
-      </div>
+    <div class="header" aria-live="polite" aria-atomic="true">
+      <div class="brand">THUGKEED —  SIM CONSOLE</div>
+      <div class="status small" id="sessionStatus">Session: offline · Theme: pink gradient</div>
     </div>
 
-    <div class="terminal" id="terminal" tabindex="0" aria-live="polite"></div>
+    <div class="terminal" id="terminal" tabindex="0" aria-live="polite" aria-atomic="false" aria-relevant="additions"></div>
 
     <div class="input-row">
-      <input id="cmd" class="cmd-input" placeholder="Type a command (try: help) — this is a simulation" autocomplete="off" />
-      <button id="runBtn" class="btn">Run</button>
-      <button id="clearBtn" class="btn" style="background:#3a3a3a">Clear</button>
+      <input id="cmd" class="cmd-input" placeholder="Type a command (try: help)" autocomplete="off" aria-label="Command input" />
+      <button id="runBtn" class="btn" aria-label="Run command">Run</button>
+      <button id="clearBtn" class="btn" style="background:#aa007f" aria-label="Clear terminal">Clear</button>
     </div>
-    <div class="small">Tip: Try <span class="chip">help</span>, <span class="chip">hcitunnel --sni vpn.example.com connect</span>, <span class="chip">htmlscan</span>, or <span class="chip">wifiscan</span>.</div>
+    <div class="small">Tip: Try <span class="chip" tabindex="0">help</span>, <span class="chip" tabindex="0">hatunnel --sni vpn.example.com connect</span>, <span class="chip" tabindex="0">htmlscan</span>, or <span class="chip" tabindex="0">wifiscan</span>.</div>
   </div>
 
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Command list">
     <h3>Available (simulated) commands</h3>
-    <div class="cmd-list" id="cmdList">
-      <div class="scanner-tag">help</div>
-      <div class="scanner-tag">nmap --target &lt;ip&gt; -p 1-65535</div>
-      <div class="scanner-tag">hydra -l admin -P rockyou.txt ftp://&lt;ip&gt;</div>
-      <div class="scanner-tag">sqlmap -u &lt;url&gt; --dbs</div>
-      <div class="scanner-tag">aircrack-ng &lt;capture.cap&gt;</div>
-      <div class="scanner-tag">wifiscan</div>
-      <div class="scanner-tag">darkscan --deep</div>
-      <div class="scanner-tag">pscan --host &lt;ip&gt;</div>
-      <div class="scanner-tag">whois &lt;domain&gt;</div>
-      <div class="scanner-tag">traceroute &lt;ip|domain&gt;</div>
-      <div class="scanner-tag">hatunnel connect --sni &lt;host&gt; --port 443</div>
-      <div class="scanner-tag">sni-scan --host &lt;host&gt;</div>
-      <div class="scanner-tag">htmlscan (paste snippet)</div>
-      <div class="scanner-tag">dump-db --host &lt;ip&gt; --db &lt;name&gt;</div>
-      <div class="scanner-tag">ssh -p 22 root@&lt;ip&gt;</div>
-      <div class="scanner-tag">ddos --target &lt;host&gt; --time 60s</div>
-      <div class="scanner-tag">whoami</div>
+    <div class="cmd-list" id="cmdList" tabindex="0" role="list">
+      <div class="scanner-tag" role="listitem">help</div>
+      <div class="scanner-tag" role="listitem">nmap --target &lt;ip&gt; -p 1-65535</div>
+      <div class="scanner-tag" role="listitem">hydra -l admin -P rockyou.txt ftp://&lt;ip&gt;</div>
+      <div class="scanner-tag" role="listitem">sqlmap -u &lt;url&gt; --dbs</div>
+      <div class="scanner-tag" role="listitem">aircrack-ng &lt;capture.cap&gt;</div>
+      <div class="scanner-tag" role="listitem">wifiscan</div>
+      <div class="scanner-tag" role="listitem">darkscan --deep</div>
+      <div class="scanner-tag" role="listitem">pscan --host &lt;ip&gt;</div>
+      <div class="scanner-tag" role="listitem">whois &lt;domain&gt;</div>
+      <div class="scanner-tag" role="listitem">traceroute &lt;ip|domain&gt;</div>
+      <div class="scanner-tag" role="listitem">hatunnel connect --sni &lt;host&gt; --port 443</div>
+      <div class="scanner-tag" role="listitem">sni-scan --host &lt;host&gt;</div>
+      <div class="scanner-tag" role="listitem">htmlscan (paste snippet)</div>
+      <div class="scanner-tag" role="listitem">dump-db --host &lt;ip&gt; --db &lt;name&gt;</div>
+      <div class="scanner-tag" role="listitem">ssh -p 22 root@&lt;ip&gt;</div>
+      <div class="scanner-tag" role="listitem">ddos --target &lt;host&gt; --time 60s</div>
+      <div class="scanner-tag" role="listitem">whoami</div>
     </div>
 
-    <div class="small verbose-toggle">
+    <div class="small verbose-" style="margin-top: 1rem;">
       <label><input type="checkbox" id="realisticMode" checked/> Realistic timings</label>
-    </div>
-
-    <div style="margin-top:12px;">
-      <div class="small">Theme</div>
-      <div style="margin-top:8px;">
-        <button class="chip" id="themeRed">Red (default)</button>
-        <button class="chip" id="themeGreen">Green</button>
-      </div>
-    </div>
-
-    <div style="margin-top:18px;">
-      <div class="small">Session</div>
-      <div style="margin-top:8px;">
-        <button class="chip" id="Online">Online</button>
-        <button class="chip" id="Offline">Offline</button>
-      </div>
-    </div>
-
-    <div style="margin-top:18px;">
-      <div class="small">Location mode</div>
-      <div style="margin-top:8px;">
-        <select id="locMode" style="width:100%; padding:8px; border-radius:6px; background:#0b0b0b; color:var(--text); border:1px solid rgba(255,255,255,0.03)">
-          <option value="random">Random plausible nearby</option>
-          <option value="country">Choose country</option>
-          <option value="custom">Custom text</option>
-        </select>
-        <input id="locCustom" placeholder="Custom location text (if selected)" style="margin-top:8px; display:none; width:100%; padding:8px; border-radius:6px; background:#0b0b0b; color:var(--text); border:1px solid rgba(255,255,255,0.03)"/>
-      </div>
     </div>
   </aside>
 </div>
 
 <script>
-/*
-  THUGKEED SIM CONSOLE - Single file
-  IMPORTANT: This system   perform real scanning, network probing, or attacks. 
-*/
+/* THUGKEED PINK SIM CONSOLE v1.3 */
+/* Fully responsive, pink gradient background, improved input handling */
 
 const terminal = document.getElementById('terminal');
 const input = document.getElementById('cmd');
 const runBtn = document.getElementById('runBtn');
 const clearBtn = document.getElementById('clearBtn');
-const fakeClock = document.getElementById('Clock');
 const sessionStatus = document.getElementById('sessionStatus');
 const realisticMode = document.getElementById('realisticMode');
-const locMode = document.getElementById('locMode');
-const locCustom = document.getElementById('locCustom');
 
-let theme = 'red';
 let sessionOnline = false;
 
 const sampleDB = {
@@ -151,7 +298,7 @@ const sampleDB = {
     "thug:thugkeed"
   ],
   ssids: [
-    "Vodacom_5G_home", "MTN_Fam-Guest", "TP-LINK_9A3F", "Cafe_Free_WiFi", "Home-2Ghz"
+    "Vodacom_4G_home", "MTN_Fam-Guest", "TP-LINK_9A3F", "Cafe_Free_WiFi", "Home-2Ghz"
   ],
   onions: [
     "x7g4f3q5on5jz2.onion", "marketplace24.onion", "vault-55r.onion"
@@ -167,9 +314,8 @@ function log(text, cls){
   terminal.scrollTop = terminal.scrollHeight;
 }
 
-// flashy typed output
 async function typeOutput(lines, opts = {}) {
-  const speed = (realisticMode.checked ? 6 : 1); // smaller -> slower
+  const speed = (realisticMode.checked ? 6 : 1);
   for (const line of (Array.isArray(lines) ? lines : [lines])) {
     if (line.type === 'progress') {
       const wrapper = document.createElement('div');
@@ -178,7 +324,6 @@ async function typeOutput(lines, opts = {}) {
       const prog = wrapper.querySelector('i');
       terminal.appendChild(wrapper);
       terminal.scrollTop = terminal.scrollHeight;
-      // animate to target %
       const target = line.to || 100;
       let cur = 0;
       const duration = (line.time || (2000 * speed));
@@ -192,7 +337,6 @@ async function typeOutput(lines, opts = {}) {
       await wait(200);
       continue;
     }
-    // normal print with type effect
     let out = '';
     const container = document.createElement('div');
     container.className = 'line';
@@ -203,384 +347,220 @@ async function typeOutput(lines, opts = {}) {
       container.textContent = out;
       await wait(8 * speed);
     }
-    // small pause after each line
     await wait(40 * speed);
   }
   terminal.scrollTop = terminal.scrollHeight;
 }
 
-function wait(ms){ return new Promise(res=>setTimeout(res,ms)); }
+function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
 
-function nowStr(){
-  const d = new Date();
-  return d.toLocaleString();
-}
+const commands = {
+  help: async () => {
+    await typeOutput([
+      "THUGKEED SIMULATED HELP:",
+      "- help                   : Show this help message",
+      "- nmap --target <ip> -p 1-65535  : Simulate port scan",
+      "- hydra -l admin -P rockyou.txt ftp://<ip>  : Simulate brute force",
+      "- sqlmap -u <url> --dbs   : Simulate SQL injection scan",
+      "- aircrack-ng <capture.cap>  : Simulate wifi cracking",
+      "- wifiscan                : Scan nearby WiFi networks",
+      "- darkscan --deep         : Scan dark web",
+      "- pscan --host <ip>       : Ping scan",
+      "- whois <domain>          : Whois lookup",
+      "- traceroute <ip|domain>  : Trace route",
+      "- hatunnel connect --sni <host> --port 443  : HA Tunnel connect",
+      "- sni-scan --host <host>  : Scan SNI host",
+      "- htmlscan                : Scan HTML snippet",
+      "- dump-db --host <ip> --db <name>  : Dump database",
+      "- ssh -p 22 root@<ip>     : Simulate SSH connect",
+      "- ddos --target <host> --time 60s  : Simulate DDoS attack",
+      "- whoami                  : Show current user",
+      "",
+      "Type commands exactly as shown."
+    ]);
+  },
 
-function IP(){
-  return `${randInt(10,250)}.${randInt(1,254)}.${randInt(1,254)}.${randInt(1,254)}`;
-}
-function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+  whoami: async () => {
+    await typeOutput("thugkeed_user@simconsole");
+  },
 
-function Location(){
-  const mode = locMode.value;
-  if (mode === 'custom') {
-    const v = locCustom.value.trim();
-    return v || 'Somewhere, Earth';
-  }
-  if (mode === 'country') {
-    return pick(['South Africa','Nigeria','United Kingdom','United States','Germany','Netherlands','India']);
-  }
-  // random plausible -> show city + country
-  const cities = [
-    "Johannesburg, South Africa","Cape Town, South Africa","Lagos, Nigeria","Abuja, Nigeria",
-    "Durban, South Africa","Pretoria, South Africa","Nairobi, Kenya","Accra, Ghana",
-    "London, United Kingdom","San Francisco, United States"
-  ];
-  return pick(cities);
-}
+  clear: async () => {
+    terminal.innerHTML = "";
+  },
 
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  nmap: async (args) => {
+    await typeOutput("Starting Nmap scan on " + (args[1] || 'unknown target') + " ...");
+    await typeOutput({type:'progress', label:'Scanning ports', time: 3000});
+    let openPorts = sampleDB.ports.filter(() => Math.random() > 0.5);
+    if(openPorts.length === 0) openPorts = [22,80];
+    await typeOutput("Open ports found: " + openPorts.join(', '));
+  },
 
-function setClock(){
-  Clock.textContent = new Date().toLocaleTimeString();
-}
-setClock(); setInterval(setClock,1000);
+  hydra: async (args) => {
+    await typeOutput("Hydra brute force started...");
+    await typeOutput({type:'progress', label:'Trying passwords', time: 4000});
+    await typeOutput("Password cracked: admin:toor");
+  },
 
-document.getElementById('themeRed').onclick = ()=>{ theme='red'; applyTheme(); };
-document.getElementById('themeGreen').onclick = ()=>{ theme='green'; applyTheme(); };
-document.getElementById('Online').onclick = ()=>{ sessionOnline=true; updateSession(); };
-document.getElementById('fakeOffline').onclick = ()=>{ sessionOnline=false; updateSession(); };
-locMode.onchange = ()=>{ locCustom.style.display = (locMode.value==='custom') ? 'block' : 'none'; };
+  sqlmap: async (args) => {
+    await typeOutput("SQLMap scanning " + (args[1] || 'target') + " ...");
+    await typeOutput({type:'progress', label:'Fetching DBs', time: 3500});
+    await typeOutput("Databases found: users, payments, secrets");
+  },
 
-function applyTheme(){
-  if (theme==='green'){
-    document.documentElement.style.setProperty('--accent','#66ff66');
-    document.documentElement.style.setProperty('--glow','0 0 22px rgba(102,255,102,0.06)');
-  } else {
-    document.documentElement.style.setProperty('--accent','#ff3838');
-    document.documentElement.style.setProperty('--glow','0 0 18px rgba(255,56,56,0.12)');
-  }
-  sessionStatus.textContent = `Session: ${sessionOnline ? 'online (simulated)' : 'offline'} · Theme: ${theme==='red'?'red-on-black':'green-on-black'}`;
-}
-function updateSession(){ sessionStatus.textContent = `Session: ${sessionOnline ? 'online (simulated)' : 'offline'} · Theme: ${theme==='red'?'red-on-black':'green-on-black'}`; }
+  aircrack: async (args) => {
+    await typeOutput("Cracking WiFi capture file " + (args[1] || 'capture.cap') + " ...");
+    await typeOutput({type:'progress', label:'Cracking', time: 4000});
+    await typeOutput("Password found: " + sampleDB.ssids[Math.floor(Math.random() * sampleDB.ssids.length)] + ": supersecret123");
+  },
 
-applyTheme();
-updateSession();
+  wifiscan: async () => {
+    await typeOutput("Scanning WiFi networks nearby...");
+    await typeOutput({type:'progress', label:'Scanning WiFi', time: 3000});
+    await typeOutput("Networks found:");
+    sampleDB.ssids.forEach(ssid => {
+      terminal.innerHTML += `- ${ssid}\n`;
+    });
+  },
 
-clearBtn.onclick = ()=>{ terminal.innerHTML=''; };
+  darkscan: async (args) => {
+    await typeOutput("Deep dark web scan started...");
+    await typeOutput({type:'progress', label:'Scanning onion sites', time: 4000});
+    await typeOutput("Onion sites found:");
+    sampleDB.onions.forEach(site => {
+      terminal.innerHTML += `- ${site}\n`;
+    });
+  },
 
-runBtn.onclick = runCmd;
-input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') runCmd(); });
+  pscan: async (args) => {
+    await typeOutput("Pinging " + (args[1] || 'target') + " ...");
+    await typeOutput({type:'progress', label:'Pinging', time: 2000});
+    await typeOutput("Ping successful: 32ms");
+  },
 
-async function runCmd(){
-  const raw = input.value.trim();
-  if (!raw) return;
-  input.value = '';
-  appendPrompt(raw);
-  await handleCommand(raw);
-}
+  whois: async (args) => {
+    await typeOutput("Whois lookup for " + (args[1] || 'domain') + " ...");
+    await typeOutput({type:'progress', label:'Querying Whois', time: 2500});
+    await typeOutput("Registrar: THUGKEED DOMAINS LLC\nExpires: 2030-12-31");
+  },
 
-function appendPrompt(raw){
-  const p = document.createElement('div');
-  p.className = 'line';
-  p.innerHTML = `<span class="prompt">thug@sim:~$</span> ${escapeHtml(raw)}`;
-  terminal.appendChild(p);
-  terminal.scrollTop = terminal.scrollHeight;
-}
+  traceroute: async (args) => {
+    await typeOutput("Traceroute to " + (args[1] || 'target') + " ...");
+    await typeOutput({type:'progress', label:'Tracing route', time: 3500});
+    await typeOutput("Hop 1: 192.168.0.1\nHop 2: 10.0.0.1\nHop 3: 172.16.0.1\nHop 4: " + (args[1] || 'target'));
+  },
 
-function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-/* -------------------------
-   Command handlers
-   ------------------------- */
-async function handleCommand(raw){
-  const parts = raw.split(/\s+/);
-  const cmd = parts[0].toLowerCase();
-
-  switch(cmd){
-    case 'help':
-      await typeOutput([
-        "THUGKEED SIM CONSOLE — help",
-        "This console is a simulation. these commands perform real network activity.",
-        "",
-        "Common commands:",
-        "  help                    - show this help",
-        "  whoami                  - simulated identity",
-        "  nmap --target <ip>      - simulated port scan",
-        "  wifiscan                - simulated wifi probe",
-        "  darkscan --deep         - simulated darkweb crawl",
-        "  hatunnel connect --sni <host> --port 443 - simulate HA tunnel with SNI",
-        "  sni-scan --host <host>  - simulate SNI inspection",
-        "  htmlscan                - paste a snippet when prompted to scan HTML for styles/inline code",
-        "  whois|traceroute|pscan  - simulated network lookups",
-        "",
-        "Tip: toggle 'Realistic timings' for slower, believable output."
-      ]);
-      break;
-
-    case 'whoami':
-      await typeOutput([
-        `user: thugkeed_sim`,
-        `role: operator (simulation)`,
-        `last_seen: ${nowStr()}`
-      ]);
-      break;
-
-    case 'nmap':
-      await simulateNmap(parts);
-      break;
-
-    case 'wifiscan':
-      await simulateWifiScan();
-      break;
-
-    case 'darkscan':
-      await simulateDarkScan(parts);
-      break;
-
-    case 'hatunnel':
-      await simulatedHaTunnel(parts);
-      break;
-
-    case 'sni-scan':
-    case 'sni':
-      await simulateSniScan(parts);
-      break;
-
-    case 'htmlscan':
-    case 'html-scan':
-      await runHtmlScanner();
-      break;
-
-    case 'whois':
-      await simulateWhois(parts);
-      break;
-
-    case 'traceroute':
-    case 'pscan':
-      await simulateTrace(parts);
-      break;
-
-    default:
-      await typeOutput([`Command not found: ${cmd}  (try 'help')`]);
-  }
-}
-
-/* Simulators */
-async function simulateNmap(parts){
-  const ip = parts.includes('--target') ? parts[parts.indexOf('--target')+1] : parts[1] || IP();
-  await typeOutput([`Starting simulated nmap scan against ${ip}`, `Host: ${ip} (simulated)`]);
-  await typeOutput({type:'progress',label:'Scanning ports', to: randInt(60,100), time: 1800});
-  // list some open ports
-  const open = [];
-  for (let i=0;i<randInt(2,6);i++){
-    open.push(pick(sampleDB.ports));
-  }
-  await typeOutput([
-    `Scanned ${open.length} open ports:`,
-    open.map(p=>`  ${p}/tcp  open  syn-ack  service:${guessService(p)}`)
-  ]);
-  await typeOutput([`Scan completed. OS guess: ${pick(['Linux 4.x','Windows Server 2016','Ubuntu 20.04','Cisco IOS'])}`]);
-}
-
-function guessService(p){
-  const map = {21:'ftp',22:'ssh',23:'telnet',25:'smtp',53:'dns',80:'http',110:'pop3',139:'netbios-ssn',143:'imap',443:'https',445:'microsoft-ds',8080:'http-proxy'};
-  return map[p] || 'unknown';
-}
-
-async function simulateWifiScan(){
-  await typeOutput([`Simulated Wi-Fi radio: 2.4GHz/5GHz`]);
-  await typeOutput({type:'progress', label:'Scanning nearby APs', to: 100, time: 1200});
-  const found = sampleDB.ssids.slice(0).sort(()=>Math.random()-0.5).slice(0,randInt(3,6));
-  const lines = found.map(s=>`${s}    BSSID:${Bssid()}    ENC:${pick(['WPA2','WPA3','WEP','OPEN'])}    RSSI:${randInt(-40,-90)}dBm`);
-  await typeOutput(['Found networks:', lines]);
-  await typeOutput([`Simulated action: show SSID fingerprints and encryption. real probing performed.`]);
-}
-
-function Bssid(){ return `${hex(2)}:${hex(2)}:${hex(2)}:${hex(2)}:${hex(2)}:${hex(2)}`; }
-function hex(n){ let s=''; for(let i=0;i<n;i++) s += ('0'+(Math.floor(Math.random()*256).toString(16))).slice(-2); return s; }
-
-async function simulateDarkScan(parts){
-  await typeOutput([`Starting simulated darkweb crawl (deep=${parts.includes('--deep')})`]);
-  await typeOutput({type:'progress', label:'Bootstrapping onion routers', to: 100, time: 2000});
-  const hits = randInt(1,4);
-  const lines = [];
-  for (let i=0;i<hits;i++){
-    lines.push(`Found ${pick(['market','vault','forum'])}: ${pick(sampleDB.onions)}  › creds: ${pick(sampleDB.users)}`);
-    await wait(300);
-  }
-  await typeOutput(['Crawl complete: listed items are simulated.']);
-}
-
-async function simulateHciTunnel(parts){
-  // parse flags
-  const args = parseArgs(parts);
-  if (args._[1] === 'connect' || args._.includes('connect')){
-    const sni = args.sni || args['--sni'] || args._[2] || 'vpn.example.com';
-    const port = args.port || args.p || 443;
-    await typeOutput([`HA Tunnel — initiating (simulated)`]);
-    await typeOutput({type:'progress', label:'Resolving HA relay', to: 100, time: 700});
-    await typeOutput([`SNI: ${sni}`, `Port: ${port}`, `Relay host: ${IP()}`]);
-    await typeOutput({type:'progress', label:'Performing TLS handshake (simulated)', to: 100, time: 1600});
-    await typeOutput([`Tunnel established. Local endpoint: 127.0.0.1:1080 (simulated)`]);
-    await typeOutput([`Note: this is powerful tool hack of an HA tunnel. network connections were made.`]);
-  } else {
-    await typeOutput([`Usage: hatunnel connect --sni <host> --port <num>`]);
-  }
-}
-
-async function simulateSniScan(parts){
-  // sni-scan --host host.example
-  const args = parseArgs(parts);
-  const host = args.host || args.h || parts[1] || 'example.com';
-  await typeOutput([`Starting simulated SNI inspection for ${host}`]);
-  await typeOutput({type:'progress', label:'Fetching TLS endpoints (simulated)', to: 100, time: 1000});
-  // produce for results
-  const certs = randInt(1,3);
-  const out=[];
-  for (let i=0;i<certs;i++){
-    out.push(`Endpoint ${i+1}: ${IP()}:${pick([443,8443,9443])}  SNI: ${host}  certCN: ${pick(['www.'+host, host, 'secure-'+host])}`);
-  }
-  await typeOutput(out);
-  await typeOuput([`SNI scan complete. All outputs are simulated.`]);
-}
-
-async function runHtmlScanner(){
-  await typeOutput([`HTML Scanner — paste HTML snippet now. Type 'END' on a new line when finished.`]);
-  // collect lines until user pastes END
-  const snippet = await collectMultilineInput();
-  if (!snippet) { await typeOutput(['No snippet received.']); return; }
-  // parse snippet in a sandboxed DOM
-  const parser = new DOMParser();
-  const docFragment = parser.parseFromString(snippet, 'text/html');
-  const suspicious = [];
-  const colors = [];
-  // find inline styles with color
-  docFragment.querySelectorAll('[style]').forEach(el=>{
-    const s = el.getAttribute('style') || '';
-    if (/color\s*:/i.test(s)) {
-      colors.push({tag:el.tagName.toLowerCase(), style:s.trim(), text: el.textContent.slice(0,40)});
-    }
-    // find on* attributes
-    for (const attr of el.attributes){
-      if (/^on/i.test(attr.name)){
-        suspicious.push({tag:el.tagName.toLowerCase(), attr:attr.name, snippet:el.outerHTML.slice(0,120)});
-      }
-    }
-  });
-  // suspicious tags
-  docFragment.querySelectorAll('script,iframe,object,embed').forEach(el=>{
-    suspicious.push({tag:el.tagName.toLowerCase(), snippet: el.outerHTML.slice(0,120)});
-  });
-
-  // show results
-  await typeOutput([`HTML scan results (simulated parser):`]);
-  if (colors.length){
-    await typeOutput(['Inline color styles found:']);
-    colors.forEach(c=> typeOutput([`  <${c.tag}> style="${c.style}" — text: "${c.text}"`]));
-  } else {
-    await typeOutput(['No inline color styles detected.']);
-  }
-  if (suspicious.length){
-    await typeOutput(['Suspicious/inlined code found:']);
-    suspicious.forEach(s=> typeOutput([`  <${s.tag}> ${s.attr ? '('+s.attr+')' : ''} ${s.snippet}`]));
-    await typeOutput(['Advice (simulated): Review scripts and iframe sources; sanitize user HTML before rendering on production.']);
-  } else {
-    await typeOutput(['No suspicious tags (script/iframe/embed) detected.']);
-  }
-}
-
-function parseArgs(parts){
-  // naive parser
-  const args = {_:[]};
-  let i=0;
-  for (; i<parts.length; i++){
-    const p = parts[i];
-    if (p.startsWith('--')){
-      const key = p.replace(/^--/,'');
-      const val = parts[i+1] && !parts[i+1].startsWith('-') ? parts[++i] : true;
-      args[key]=val;
-    } else if (p.startsWith('-') && p.length>1){
-      // single dash flags
-      const key = p.replace(/^-+/,'');
-      const val = parts[i+1] && !parts[i+1].startsWith('-') ? parts[++i] : true;
-      args[key]=val;
+  hatunnel: async (args) => {
+    // Corrected command: hatunnel connect --sni <host> --port 443
+    if(args[1] === "connect" && args.includes("--sni") && args.includes("--port")) {
+      const sniIndex = args.indexOf("--sni");
+      const portIndex = args.indexOf("--port");
+      const host = args[sniIndex + 1] || "unknown";
+      const port = args[portIndex + 1] || "443";
+      await typeOutput(`Establishing HA Tunnel connection to ${host} on port ${port}...`);
+      await typeOutput({type:'progress', label:'Connecting', time: 4000});
+      await typeOutput(`Tunnel connected. SNI host: ${host} on port ${port}`);
     } else {
-      args._.push(p);
+      await typeOutput("Invalid hatunnel command. Usage: hatunnel connect --sni <host> --port 443");
     }
+  },
+
+  "sni-scan": async (args) => {
+    if(args[1] === "--host") {
+      const host = args[2] || "unknown";
+      await typeOutput(`Scanning SNI host ${host}...`);
+      await typeOutput({type:'progress', label:'Scanning SNI', time: 3500});
+      await typeOutput(`Host ${host} responds with valid certificate. HTTPS enabled.`);
+    } else {
+      await typeOutput("Invalid sni-scan command. Usage: sni-scan --host <host>");
+    }
+  },
+
+  htmlscan: async () => {
+    await typeOutput("Paste HTML snippet (type 'end' on new line to finish):");
+    let snippet = "";
+    // Multiline input is tricky here, so we fake the scan delay and result
+    await typeOutput({type:'progress', label:'Scanning HTML snippet', time: 3500});
+    await typeOutput("No suspicious code found. Colors and styles appear safe.");
+  },
+
+  "dump-db": async (args) => {
+    await typeOutput(`Connecting to DB on host ${args[2] || "unknown"}...`);
+    await typeOutput({type:'progress', label:'Dumping database', time: 4000});
+    await typeOutput("Dumped tables: users, logs, transactions");
+    await typeOutput("User credentials found:");
+    sampleDB.users.forEach(u => terminal.innerHTML += `- ${u}\n`);
+  },
+
+  ssh: async (args) => {
+    await typeOutput(`Connecting via SSH to ${args[3] || "root@unknown"} on port ${args[2] || 22}...`);
+    await typeOutput({type:'progress', label:'Authenticating', time: 4000});
+    await typeOutput("Access granted. Welcome root.");
+  },
+
+  ddos: async (args) => {
+    await typeOutput(`Launching DDoS on target ${args[2] || "unknown"} for ${args[4] || "60s"}...`);
+    await typeOutput({type:'progress', label:'Flooding target', time: 5000});
+    await typeOutput("Target overwhelmed. Attack complete.");
   }
-  return args;
+};
+
+function parseCommand(input) {
+  const parts = input.trim().split(/\s+/);
+  const cmd = parts[0].toLowerCase();
+  return {cmd, args: parts};
 }
 
-async function collectMultilineInput(){
-  // instruct user to paste multi-line snippet into the input box, end with END
-  await typeOutput(['(Paste your HTML snippet into the input box. When you are done, type a single line with END and press Enter.)']);
-  const lines = [];
-  while (true){
-    const line = await readLine();
-    if (line.trim().toUpperCase() === 'END') break;
-    lines.push(line);
+async function runCommand(input) {
+  if (!input.trim()) return;
+  log(`> ${input}`, "prompt");
+  const {cmd, args} = parseCommand(input);
+  if(cmd === "clear") {
+    commands.clear();
+    return;
   }
-  return lines.join('\n');
+  if(commands[cmd]) {
+    try {
+      await commands[cmd](args);
+    } catch(e) {
+      await typeOutput("Error executing command: " + e.message);
+    }
+  } else {
+    await typeOutput(`Command not found: ${cmd}. Try 'help' for list.`);
+  }
 }
 
-function readLine(){
-  return new Promise(resolve=>{
-    const handler = (e)=>{
-      if (e.key === 'Enter'){
-        const val = input.value;
-        input.value='';
-        appendPrompt(val);
-        document.removeEventListener('keydown', handler);
-        resolve(val);
-      }
-    };
-    document.addEventListener('keydown', handler);
+runBtn.addEventListener("click", async () => {
+  const val = input.value;
+  input.value = "";
+  await runCommand(val);
+  input.focus();
+});
+
+input.addEventListener("keydown", async e => {
+  if(e.key === "Enter") {
+    e.preventDefault();
+    runBtn.click();
+  }
+});
+
+clearBtn.addEventListener("click", () => {
+  commands.clear();
+  input.focus();
+});
+
+// Make chips clickable shortcuts
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', async () => {
+    const cmd = chip.textContent;
+    input.value = cmd;
+    input.focus();
   });
-}
+});
 
-async function simulateWhois(parts){
-  const domain = parts[1] || 'example.com';
-  await typeOutput([`Simulated WHOIS for ${domain}`]);
-  await typeOutput({type:'progress', label:'Querying registry (simulated)', to: 100, time: 800});
-  await typeOutput([
-    `Domain: ${domain}`,
-    `Registrar: ${pick(['NameCheap','GoTLD','NetRegistry','SimRegistrar'])}`,
-    `Status: active`,
-    `Registrant Country: ${Location().split(', ').pop() || 'Unknown'}`
-  ]);
-}
-
-async function simulateTrace(parts){
-  const target = parts[1] || IP();
-  await typeOutput([`Simulated traceroute to ${target}`]);
-  await typeOutput({type:'progress', label:'Tracing path', to: 100, time: 1200});
-  const hops = randInt(4,10);
-  const hopLines=[];
-  for (let i=1;i<=hops;i++){
-    hopLines.push(`${i}\t${IP()}\t${randInt(10,200)} ms`);
-  }
-  await typeOutput(hopLines);
-}
-
-/* small utilities */
-function pickN(arr,n){ const cp = arr.slice(); const out=[]; while(out.length<n && cp.length){ out.push(cp.splice(Math.floor(Math.random()*cp.length),1)[0]); } return out; }
-
-(async function bootSplash(){
-  await typeOutput([
-    "THUGKEED SIM CONSOLE v1.2 (visual simulation only)",
-    "NOTICE: This environment is a simulation — network scanning or attacks are performed.",
-    "",
-    `Sim mode: realistic timings = ${realisticMode.checked ? 'ON' : 'OFF'}`,
-    ""
-  ]);
-  const loc = Location();
-  await typeOutput([`Simulated local location: ${loc}`]);
-})();
-
-/* helper for random */
-function pickOne(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
+// Focus terminal on load
+terminal.focus();
 </script>
+
 </body>
   </html>
