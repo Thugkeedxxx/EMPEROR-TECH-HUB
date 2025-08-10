@@ -1,375 +1,586 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title> EMPEROR CODE UNIT 모 </title>
-  <style>
-    body, html {
-      margin: 0; padding: 0; height: 100%;
-      background: #0d001a;
-      font-family: 'Courier New', Courier, monospace;
-      color: #00ffea;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      user-select: none;
-    }
-
-    /* Login Screen */
-    #login-screen {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: #1a002d;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      gap: 10px;
-      box-shadow: 0 0 20px #8a2be2;
-      animation: glitch 1s infinite;
-    }
-
-    #login-screen h2 {
-      color: #b365ff;
-      font-size: 2.5rem;
-      margin: 0;
-      text-shadow: 0 0 10px #8a2be2;
-    }
-
-    #login-screen input {
-      font-family: monospace;
-      font-size: 1.2rem;
-      padding: 10px;
-      width: 250px;
-      border: none;
-      border-radius: 5px;
-      outline: none;
-      background: #2a003a;
-      color: #00ffea;
-      text-align: center;
-      box-shadow: inset 0 0 10px #b365ff40;
-    }
-
-    #login-screen button {
-      background: #b365ff;
-      border: none;
-      color: #0d001a;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: bold;
-      border-radius: 5px;
-      transition: background 0.3s ease;
-    }
-
-    #login-screen button:hover {
-      background: #8a2be2;
-      color: white;
-    }
-
-    @keyframes glitch {
-      0% { transform: translate(0, 0); }
-      20% { transform: translate(-1px, 1px); }
-      40% { transform: translate(1px, -1px); }
-      60% { transform: translate(-1px, 1px); }
-      80% { transform: translate(1px, 1px); }
-      100% { transform: translate(0, 0); }
-    }
-
-    /* Terminal UI */
-    #terminal {
-      max-width: 900px;
-      width: 90vw;
-      height: 80vh;
-      background: #0d001a;
-      box-shadow: 0 0 30px #8a2be2;
-      border-radius: 12px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .header h1 {
-      font-size: 2.8rem;
-      color: #b365ff;
-      margin: 0;
-      text-shadow: 0 0 10px #8a2be2;
-      animation: glitch 1s infinite;
-    }
-
-    .subtitle {
-      color: #888;
-      margin-bottom: 20px;
-      font-size: 1rem;
-    }
-
-    .output {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: inset 0 0 10px #b365ff40;
-      overflow-y: auto;
-      font-size: 1rem;
-      line-height: 1.3;
-      margin-bottom: 10px;
-      white-space: pre-wrap;
-    }
-
-    .input-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .input-area .prompt {
-      color: #ff66ff;
-      user-select: none;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-
-    .input-area input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #00ffea;
-      font-family: monospace;
-      font-size: 1.1rem;
-      padding: 5px 10px;
-    }
-
-    footer {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      color: #666;
-      user-select: none;
-    }
-
-    a {
-      color: #b365ff;
-      text-decoration: none;
-    }
-
-    /* Stats Panel */
-    .stats {
-      margin-top: 15px;
-      display: flex;
-      gap: 20px;
-      font-size: 0.85rem;
-      color: #999;
-      user-select: none;
-    }
-
-    /* Command Menu */
-    .command-menu {
-      margin-top: 10px;
-    }
-
-    .command-menu button {
-      background: #1c002a;
-      color: #b365ff;
-      border: 1px solid #b365ff50;
-      padding: 6px 10px;
-      margin: 3px;
-      cursor: pointer;
-      font-family: monospace;
-      border-radius: 4px;
-      transition: background 0.3s ease;
-      user-select: none;
-    }
-
-    .command-menu button:hover {
-      background: #2a003a;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>THUGKEED — Command Console (Simulation)</title>
+<style>
+  :root{
+    --bg:#0b0b0b; --panel:#0e0e0e; --text:#f2f2f2; --accent:#ff3838;
+    --muted:#a8a8a8; --glow:0 0 18px rgba(255,56,56,0.12);
+  }
+  html,body{height:100%; margin:0; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;}
+  body{background:
+    radial-gradient(ellipse at 10% 10%, rgba(255,56,56,0.03), transparent 8%),
+    linear-gradient(180deg, rgba(255,56,56,0.01), transparent 20%),
+    var(--bg);
+    color:var(--text); display:flex; align-items:stretch; justify-content:center; padding:18px;}
+  .console{
+    width:100%; max-width:1300px; height:calc(100vh - 36px); background:linear-gradient(180deg,#070707,#0f0f0f 60%); border-radius:12px; box-shadow:var(--glow);
+    display:grid; grid-template-columns: 1fr 360px; overflow:hidden; border:1px solid rgba(255,56,56,0.06);
+  }
+  .left{padding:18px; display:flex; flex-direction:column; gap:12px;}
+  .header{display:flex; gap:12px; align-items:center;}
+  .brand{font-weight:700; letter-spacing:1px; font-size:18px; color:var(--accent);}
+  .status{font-size:12px; color:var(--muted);}
+  .terminal{flex:1; background:linear-gradient(180deg,#050505,#0b0b0b); padding:16px; border-radius:8px; overflow:auto; box-shadow:inset 0 0 40px rgba(0,0,0,0.5);}
+  .line{white-space:pre-wrap; font-size:13px; line-height:1.4;}
+  .prompt{color:#ffd7d7;}
+  .input-row{display:flex; gap:8px; align-items:center; margin-top:8px;}
+  .cmd-input{flex:1; background:#0a0a0a; border:1px solid rgba(255,255,255,0.04); padding:10px 12px; color:var(--text); border-radius:6px; outline:none; font-family:inherit;}
+  .btn{background:var(--accent); border:none; padding:8px 10px; border-radius:6px; color:white; cursor:pointer;}
+  .sidebar{padding:18px; border-left:1px solid rgba(255,255,255,0.02); background:linear-gradient(180deg, rgba(255,56,56,0.01), transparent);}
+  h3{margin:0 0 10px 0; font-size:14px; color:var(--accent);}
+  .cmd-list{font-size:13px; color:var(--muted); max-height:46vh; overflow:auto; padding-right:6px;}
+  .small{font-size:12px; color:var(--muted); margin-top:10px;}
+  .chip{display:inline-block; padding:6px 8px; background:#0c0c0c; border-radius:6px; margin:4px 4px 4px 0; font-size:12px; border:1px solid rgba(255,255,255,0.02);}
+  .progress{height:12px; background:#111; border-radius:8px; overflow:hidden; box-shadow:inset 0 -2px 8px rgba(0,0,0,0.6);}
+  .progress > i{display:block; height:100%; width:0%; background:linear-gradient(90deg, rgba(255,56,56,0.9), rgba(255,130,130,0.9)); transition:width 200ms linear;}
+  .verbose-toggle{margin-top:12px;}
+  .log-warning{color:#ffad66;}
+  .fake-link{color:#8bd1ff; cursor:pointer; text-decoration:underline;}
+  pre.html-snippet{background:#080808; border:1px dashed rgba(255,255,255,0.02); padding:10px; border-radius:6px; font-size:12px; overflow:auto;}
+  .scanner-tag{display:inline-block; padding:5px 8px; margin:4px; border-radius:6px; background:#070707; border:1px solid rgba(255,255,255,0.03);}
+</style>
 </head>
 <body>
-  <!-- Login Screen -->
-  <div id="login-screen">
-    <h2>ACCESS GATE</h2>
-    <input type="password" id="login-password" placeholder="Enter Access Key" autocomplete="off" />
-    <button id="login-btn">ENTER</button>
-  </div>
-
-  <!-- Terminal -->
-  <div id="terminal" style="display:none;">
+<div class="console" role="application" aria-label="THUGKEED simulated console">
+  <div class="left">
     <div class="header">
-      <h1>CODE UNIT</h1>
-      <p class="subtitle">Hacker Console · Powered by THUGKEED</p>
+      <div>
+        <div class="brand">THUGKEED — SIM CONSOLE</div>
+        <div class="status small" id="sessionStatus">Session: offline · Theme: red-on-black</div>
+      </div>
+      <div style="margin-left:auto" class="small">
+        <span id="Clock"></span>
+      </div>
     </div>
 
-    <div class="output" id="terminal-output"> </div>
+    <div class="terminal" id="terminal" tabindex="0" aria-live="polite"></div>
 
-    <div class="input-area">
-      <span class="prompt">root@codeunit:~$</span>
-      <input type="text" id="terminal-input" autocomplete="off" autofocus disabled />
+    <div class="input-row">
+      <input id="cmd" class="cmd-input" placeholder="Type a command (try: help) — this is a simulation" autocomplete="off" />
+      <button id="runBtn" class="btn">Run</button>
+      <button id="clearBtn" class="btn" style="background:#3a3a3a">Clear</button>
     </div>
-
-    <div class="command-menu">
-      <button onclick="runCommand('help')">help</button>
-      <button onclick="runCommand('sql-inject')">sql-inject</button>
-      <button onclick="runCommand('brute-force')">brute-force</button>
-      <button onclick="runCommand('darkweb-scan')">darkweb-scan</button>
-      <button onclick="runCommand('ip-locator')">ip-locator</button>
-      <button onclick="runCommand('ddos-blast')">ddos-blast</button>
-      <button onclick="runCommand('clear')">clear</button>
-    </div>
-
-    <div class="stats" id="live-stats">
-      <span>CPU: 0%</span>
-      <span>Packets: 0</span>
-      <span>Logs: 0</span>
-    </div>
-
-    <footer>
-      <p>Connect with us on 
-        <a href="https://whatsapp.com/channel/0029VbB7a9v6LwHqDUERef0M" target="_blank" rel="noopener noreferrer">
-          WhatsApp Channel
-        </a>
-      </p>
-    </footer>
+    <div class="small">Tip: Try <span class="chip">help</span>, <span class="chip">hcitunnel --sni vpn.example.com connect</span>, <span class="chip">htmlscan</span>, or <span class="chip">wifiscan</span>.</div>
   </div>
 
-  <script>
-    const loginScreen = document.getElementById('login-screen');
-    const loginInput = document.getElementById('login-password');
-    const loginBtn = document.getElementById('login-btn');
+  <aside class="sidebar">
+    <h3>Available (simulated) commands</h3>
+    <div class="cmd-list" id="cmdList">
+      <div class="scanner-tag">help</div>
+      <div class="scanner-tag">nmap --target &lt;ip&gt; -p 1-65535</div>
+      <div class="scanner-tag">hydra -l admin -P rockyou.txt ftp://&lt;ip&gt;</div>
+      <div class="scanner-tag">sqlmap -u &lt;url&gt; --dbs</div>
+      <div class="scanner-tag">aircrack-ng &lt;capture.cap&gt;</div>
+      <div class="scanner-tag">wifiscan</div>
+      <div class="scanner-tag">darkscan --deep</div>
+      <div class="scanner-tag">pscan --host &lt;ip&gt;</div>
+      <div class="scanner-tag">whois &lt;domain&gt;</div>
+      <div class="scanner-tag">traceroute &lt;ip|domain&gt;</div>
+      <div class="scanner-tag">hatunnel connect --sni &lt;host&gt; --port 443</div>
+      <div class="scanner-tag">sni-scan --host &lt;host&gt;</div>
+      <div class="scanner-tag">htmlscan (paste snippet)</div>
+      <div class="scanner-tag">dump-db --host &lt;ip&gt; --db &lt;name&gt;</div>
+      <div class="scanner-tag">ssh -p 22 root@&lt;ip&gt;</div>
+      <div class="scanner-tag">ddos --target &lt;host&gt; --time 60s</div>
+      <div class="scanner-tag">whoami</div>
+    </div>
 
-    const terminal = document.getElementById('terminal');
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalOutput = document.getElementById('terminal-output');
-    const stats = document.getElementById('live-stats');
+    <div class="small verbose-toggle">
+      <label><input type="checkbox" id="realisticMode" checked/> Realistic timings</label>
+    </div>
 
-    const ACCESS_KEY = 'admin123'; // You can change the password here
+    <div style="margin-top:12px;">
+      <div class="small">Theme</div>
+      <div style="margin-top:8px;">
+        <button class="chip" id="themeRed">Red (default)</button>
+        <button class="chip" id="themeGreen">Green</button>
+      </div>
+    </div>
 
-    // Play glitch startup sound
-    function playGlitchSound() {
-      const audio = new Audio('https://freesound.org/data/previews/455/455404_5121236-lq.mp3');
-      audio.volume = 0.2;
-      audio.play();
+    <div style="margin-top:18px;">
+      <div class="small">Session</div>
+      <div style="margin-top:8px;">
+        <button class="chip" id="Online">Online</button>
+        <button class="chip" id="Offline">Offline</button>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;">
+      <div class="small">Location mode</div>
+      <div style="margin-top:8px;">
+        <select id="locMode" style="width:100%; padding:8px; border-radius:6px; background:#0b0b0b; color:var(--text); border:1px solid rgba(255,255,255,0.03)">
+          <option value="random">Random plausible nearby</option>
+          <option value="country">Choose country</option>
+          <option value="custom">Custom text</option>
+        </select>
+        <input id="locCustom" placeholder="Custom location text (if selected)" style="margin-top:8px; display:none; width:100%; padding:8px; border-radius:6px; background:#0b0b0b; color:var(--text); border:1px solid rgba(255,255,255,0.03)"/>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+/*
+  THUGKEED SIM CONSOLE - Single file
+  IMPORTANT: This system   perform real scanning, network probing, or attacks. 
+*/
+
+const terminal = document.getElementById('terminal');
+const input = document.getElementById('cmd');
+const runBtn = document.getElementById('runBtn');
+const clearBtn = document.getElementById('clearBtn');
+const fakeClock = document.getElementById('Clock');
+const sessionStatus = document.getElementById('sessionStatus');
+const realisticMode = document.getElementById('realisticMode');
+const locMode = document.getElementById('locMode');
+const locCustom = document.getElementById('locCustom');
+
+let theme = 'red';
+let sessionOnline = false;
+
+const sampleDB = {
+  users: [
+    "admin:admin123",
+    "root:toor",
+    "john:letmein",
+    "alice:qwerty",
+    "service:Serv!ce2025",
+    "thug:thugkeed"
+  ],
+  ssids: [
+    "Vodacom_5G_home", "MTN_Fam-Guest", "TP-LINK_9A3F", "Cafe_Free_WiFi", "Home-2Ghz"
+  ],
+  onions: [
+    "x7g4f3q5on5jz2.onion", "marketplace24.onion", "vault-55r.onion"
+  ],
+  ports: [21,22,23,25,53,80,110,139,143,443,445,8080,8443,9000]
+};
+
+function log(text, cls){
+  const line = document.createElement('div');
+  line.className = 'line ' + (cls||'');
+  line.textContent = text;
+  terminal.appendChild(line);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+// flashy typed output
+async function typeOutput(lines, opts = {}) {
+  const speed = (realisticMode.checked ? 6 : 1); // smaller -> slower
+  for (const line of (Array.isArray(lines) ? lines : [lines])) {
+    if (line.type === 'progress') {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'line';
+      wrapper.innerHTML = `<div style="margin:6px 0">${line.label || 'Progress'}:</div><div class="progress"><i style="width:0%"></i></div>`;
+      const prog = wrapper.querySelector('i');
+      terminal.appendChild(wrapper);
+      terminal.scrollTop = terminal.scrollHeight;
+      // animate to target %
+      const target = line.to || 100;
+      let cur = 0;
+      const duration = (line.time || (2000 * speed));
+      const stepTime = Math.max(20, Math.floor(duration / Math.max(1,target)));
+      while (cur < target) {
+        cur += Math.ceil(Math.random()*3);
+        if (cur>target) cur = target;
+        prog.style.width = cur + '%';
+        await wait(stepTime);
+      }
+      await wait(200);
+      continue;
     }
-
-    // Play beep sound
-    function playBeep() {
-      const beep = new Audio('https://freesound.org/data/previews/522/522950_10716611-lq.mp3');
-      beep.volume = 0.15;
-      beep.play();
+    // normal print with type effect
+    let out = '';
+    const container = document.createElement('div');
+    container.className = 'line';
+    terminal.appendChild(container);
+    terminal.scrollTop = terminal.scrollHeight;
+    for (let i=0;i<line.length;i++) {
+      out += line[i];
+      container.textContent = out;
+      await wait(8 * speed);
     }
+    // small pause after each line
+    await wait(40 * speed);
+  }
+  terminal.scrollTop = terminal.scrollHeight;
+}
 
-    // Fake commands and outputs
-    const fakeCommands = {
-      help: [
-        'Available Commands:',
-        '- sql-inject',
-        '- brute-force',
-        '- darkweb-scan',
-        '- ip-locator',
-        '- ddos-blast',
-        '- clear'
-      ],
-      'sql-inject': [
-        '[SQL INJECTOR] Connecting to database...',
-        "Injection string: ' OR '1'='1'; --",
-        '🧨 SQL Injection failed [simulation]'
-      ],
-      'brute-force': [
-        '💥 Launching brute force attack...',
-        'Trying 10,000+ passwords...',
-        '🔒 Brute force failed [simulation]'
-      ],
-      'darkweb-scan': [
-        '🌐 Accessing dark web...',
-        'Found 12 .onion links',
-        '🧪 Dark web scan complete.'
-      ],
-      'ip-locator': [
-        '📍 Tracing IP address: 102.89.33.2...',
-        'Found location: Lagos, Nigeria',
-        '🔍 Trace complete.'
-      ],
-      'ddos-blast': [
-        '🚀 Firing UDP packets...',
-        'Target: example.com',
-        '🔥 DDoS blast simulated.'
-      ],
-      clear: []
+function wait(ms){ return new Promise(res=>setTimeout(res,ms)); }
+
+function nowStr(){
+  const d = new Date();
+  return d.toLocaleString();
+}
+
+function IP(){
+  return `${randInt(10,250)}.${randInt(1,254)}.${randInt(1,254)}.${randInt(1,254)}`;
+}
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function Location(){
+  const mode = locMode.value;
+  if (mode === 'custom') {
+    const v = locCustom.value.trim();
+    return v || 'Somewhere, Earth';
+  }
+  if (mode === 'country') {
+    return pick(['South Africa','Nigeria','United Kingdom','United States','Germany','Netherlands','India']);
+  }
+  // random plausible -> show city + country
+  const cities = [
+    "Johannesburg, South Africa","Cape Town, South Africa","Lagos, Nigeria","Abuja, Nigeria",
+    "Durban, South Africa","Pretoria, South Africa","Nairobi, Kenya","Accra, Ghana",
+    "London, United Kingdom","San Francisco, United States"
+  ];
+  return pick(cities);
+}
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function setClock(){
+  Clock.textContent = new Date().toLocaleTimeString();
+}
+setClock(); setInterval(setClock,1000);
+
+document.getElementById('themeRed').onclick = ()=>{ theme='red'; applyTheme(); };
+document.getElementById('themeGreen').onclick = ()=>{ theme='green'; applyTheme(); };
+document.getElementById('Online').onclick = ()=>{ sessionOnline=true; updateSession(); };
+document.getElementById('fakeOffline').onclick = ()=>{ sessionOnline=false; updateSession(); };
+locMode.onchange = ()=>{ locCustom.style.display = (locMode.value==='custom') ? 'block' : 'none'; };
+
+function applyTheme(){
+  if (theme==='green'){
+    document.documentElement.style.setProperty('--accent','#66ff66');
+    document.documentElement.style.setProperty('--glow','0 0 22px rgba(102,255,102,0.06)');
+  } else {
+    document.documentElement.style.setProperty('--accent','#ff3838');
+    document.documentElement.style.setProperty('--glow','0 0 18px rgba(255,56,56,0.12)');
+  }
+  sessionStatus.textContent = `Session: ${sessionOnline ? 'online (simulated)' : 'offline'} · Theme: ${theme==='red'?'red-on-black':'green-on-black'}`;
+}
+function updateSession(){ sessionStatus.textContent = `Session: ${sessionOnline ? 'online (simulated)' : 'offline'} · Theme: ${theme==='red'?'red-on-black':'green-on-black'}`; }
+
+applyTheme();
+updateSession();
+
+clearBtn.onclick = ()=>{ terminal.innerHTML=''; };
+
+runBtn.onclick = runCmd;
+input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') runCmd(); });
+
+async function runCmd(){
+  const raw = input.value.trim();
+  if (!raw) return;
+  input.value = '';
+  appendPrompt(raw);
+  await handleCommand(raw);
+}
+
+function appendPrompt(raw){
+  const p = document.createElement('div');
+  p.className = 'line';
+  p.innerHTML = `<span class="prompt">thug@sim:~$</span> ${escapeHtml(raw)}`;
+  terminal.appendChild(p);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* -------------------------
+   Command handlers
+   ------------------------- */
+async function handleCommand(raw){
+  const parts = raw.split(/\s+/);
+  const cmd = parts[0].toLowerCase();
+
+  switch(cmd){
+    case 'help':
+      await typeOutput([
+        "THUGKEED SIM CONSOLE — help",
+        "This console is a simulation. these commands perform real network activity.",
+        "",
+        "Common commands:",
+        "  help                    - show this help",
+        "  whoami                  - simulated identity",
+        "  nmap --target <ip>      - simulated port scan",
+        "  wifiscan                - simulated wifi probe",
+        "  darkscan --deep         - simulated darkweb crawl",
+        "  hatunnel connect --sni <host> --port 443 - simulate HA tunnel with SNI",
+        "  sni-scan --host <host>  - simulate SNI inspection",
+        "  htmlscan                - paste a snippet when prompted to scan HTML for styles/inline code",
+        "  whois|traceroute|pscan  - simulated network lookups",
+        "",
+        "Tip: toggle 'Realistic timings' for slower, believable output."
+      ]);
+      break;
+
+    case 'whoami':
+      await typeOutput([
+        `user: thugkeed_sim`,
+        `role: operator (simulation)`,
+        `last_seen: ${nowStr()}`
+      ]);
+      break;
+
+    case 'nmap':
+      await simulateNmap(parts);
+      break;
+
+    case 'wifiscan':
+      await simulateWifiScan();
+      break;
+
+    case 'darkscan':
+      await simulateDarkScan(parts);
+      break;
+
+    case 'hatunnel':
+      await simulatedHaTunnel(parts);
+      break;
+
+    case 'sni-scan':
+    case 'sni':
+      await simulateSniScan(parts);
+      break;
+
+    case 'htmlscan':
+    case 'html-scan':
+      await runHtmlScanner();
+      break;
+
+    case 'whois':
+      await simulateWhois(parts);
+      break;
+
+    case 'traceroute':
+    case 'pscan':
+      await simulateTrace(parts);
+      break;
+
+    default:
+      await typeOutput([`Command not found: ${cmd}  (try 'help')`]);
+  }
+}
+
+/* Simulators */
+async function simulateNmap(parts){
+  const ip = parts.includes('--target') ? parts[parts.indexOf('--target')+1] : parts[1] || IP();
+  await typeOutput([`Starting simulated nmap scan against ${ip}`, `Host: ${ip} (simulated)`]);
+  await typeOutput({type:'progress',label:'Scanning ports', to: randInt(60,100), time: 1800});
+  // list some open ports
+  const open = [];
+  for (let i=0;i<randInt(2,6);i++){
+    open.push(pick(sampleDB.ports));
+  }
+  await typeOutput([
+    `Scanned ${open.length} open ports:`,
+    open.map(p=>`  ${p}/tcp  open  syn-ack  service:${guessService(p)}`)
+  ]);
+  await typeOutput([`Scan completed. OS guess: ${pick(['Linux 4.x','Windows Server 2016','Ubuntu 20.04','Cisco IOS'])}`]);
+}
+
+function guessService(p){
+  const map = {21:'ftp',22:'ssh',23:'telnet',25:'smtp',53:'dns',80:'http',110:'pop3',139:'netbios-ssn',143:'imap',443:'https',445:'microsoft-ds',8080:'http-proxy'};
+  return map[p] || 'unknown';
+}
+
+async function simulateWifiScan(){
+  await typeOutput([`Simulated Wi-Fi radio: 2.4GHz/5GHz`]);
+  await typeOutput({type:'progress', label:'Scanning nearby APs', to: 100, time: 1200});
+  const found = sampleDB.ssids.slice(0).sort(()=>Math.random()-0.5).slice(0,randInt(3,6));
+  const lines = found.map(s=>`${s}    BSSID:${Bssid()}    ENC:${pick(['WPA2','WPA3','WEP','OPEN'])}    RSSI:${randInt(-40,-90)}dBm`);
+  await typeOutput(['Found networks:', lines]);
+  await typeOutput([`Simulated action: show SSID fingerprints and encryption. real probing performed.`]);
+}
+
+function Bssid(){ return `${hex(2)}:${hex(2)}:${hex(2)}:${hex(2)}:${hex(2)}:${hex(2)}`; }
+function hex(n){ let s=''; for(let i=0;i<n;i++) s += ('0'+(Math.floor(Math.random()*256).toString(16))).slice(-2); return s; }
+
+async function simulateDarkScan(parts){
+  await typeOutput([`Starting simulated darkweb crawl (deep=${parts.includes('--deep')})`]);
+  await typeOutput({type:'progress', label:'Bootstrapping onion routers', to: 100, time: 2000});
+  const hits = randInt(1,4);
+  const lines = [];
+  for (let i=0;i<hits;i++){
+    lines.push(`Found ${pick(['market','vault','forum'])}: ${pick(sampleDB.onions)}  › creds: ${pick(sampleDB.users)}`);
+    await wait(300);
+  }
+  await typeOutput(['Crawl complete: listed items are simulated.']);
+}
+
+async function simulateHciTunnel(parts){
+  // parse flags
+  const args = parseArgs(parts);
+  if (args._[1] === 'connect' || args._.includes('connect')){
+    const sni = args.sni || args['--sni'] || args._[2] || 'vpn.example.com';
+    const port = args.port || args.p || 443;
+    await typeOutput([`HA Tunnel — initiating (simulated)`]);
+    await typeOutput({type:'progress', label:'Resolving HA relay', to: 100, time: 700});
+    await typeOutput([`SNI: ${sni}`, `Port: ${port}`, `Relay host: ${IP()}`]);
+    await typeOutput({type:'progress', label:'Performing TLS handshake (simulated)', to: 100, time: 1600});
+    await typeOutput([`Tunnel established. Local endpoint: 127.0.0.1:1080 (simulated)`]);
+    await typeOutput([`Note: this is powerful tool hack of an HA tunnel. network connections were made.`]);
+  } else {
+    await typeOutput([`Usage: hatunnel connect --sni <host> --port <num>`]);
+  }
+}
+
+async function simulateSniScan(parts){
+  // sni-scan --host host.example
+  const args = parseArgs(parts);
+  const host = args.host || args.h || parts[1] || 'example.com';
+  await typeOutput([`Starting simulated SNI inspection for ${host}`]);
+  await typeOutput({type:'progress', label:'Fetching TLS endpoints (simulated)', to: 100, time: 1000});
+  // produce for results
+  const certs = randInt(1,3);
+  const out=[];
+  for (let i=0;i<certs;i++){
+    out.push(`Endpoint ${i+1}: ${IP()}:${pick([443,8443,9443])}  SNI: ${host}  certCN: ${pick(['www.'+host, host, 'secure-'+host])}`);
+  }
+  await typeOutput(out);
+  await typeOuput([`SNI scan complete. All outputs are simulated.`]);
+}
+
+async function runHtmlScanner(){
+  await typeOutput([`HTML Scanner — paste HTML snippet now. Type 'END' on a new line when finished.`]);
+  // collect lines until user pastes END
+  const snippet = await collectMultilineInput();
+  if (!snippet) { await typeOutput(['No snippet received.']); return; }
+  // parse snippet in a sandboxed DOM
+  const parser = new DOMParser();
+  const docFragment = parser.parseFromString(snippet, 'text/html');
+  const suspicious = [];
+  const colors = [];
+  // find inline styles with color
+  docFragment.querySelectorAll('[style]').forEach(el=>{
+    const s = el.getAttribute('style') || '';
+    if (/color\s*:/i.test(s)) {
+      colors.push({tag:el.tagName.toLowerCase(), style:s.trim(), text: el.textContent.slice(0,40)});
+    }
+    // find on* attributes
+    for (const attr of el.attributes){
+      if (/^on/i.test(attr.name)){
+        suspicious.push({tag:el.tagName.toLowerCase(), attr:attr.name, snippet:el.outerHTML.slice(0,120)});
+      }
+    }
+  });
+  // suspicious tags
+  docFragment.querySelectorAll('script,iframe,object,embed').forEach(el=>{
+    suspicious.push({tag:el.tagName.toLowerCase(), snippet: el.outerHTML.slice(0,120)});
+  });
+
+  // show results
+  await typeOutput([`HTML scan results (simulated parser):`]);
+  if (colors.length){
+    await typeOutput(['Inline color styles found:']);
+    colors.forEach(c=> typeOutput([`  <${c.tag}> style="${c.style}" — text: "${c.text}"`]));
+  } else {
+    await typeOutput(['No inline color styles detected.']);
+  }
+  if (suspicious.length){
+    await typeOutput(['Suspicious/inlined code found:']);
+    suspicious.forEach(s=> typeOutput([`  <${s.tag}> ${s.attr ? '('+s.attr+')' : ''} ${s.snippet}`]));
+    await typeOutput(['Advice (simulated): Review scripts and iframe sources; sanitize user HTML before rendering on production.']);
+  } else {
+    await typeOutput(['No suspicious tags (script/iframe/embed) detected.']);
+  }
+}
+
+function parseArgs(parts){
+  // naive parser
+  const args = {_:[]};
+  let i=0;
+  for (; i<parts.length; i++){
+    const p = parts[i];
+    if (p.startsWith('--')){
+      const key = p.replace(/^--/,'');
+      const val = parts[i+1] && !parts[i+1].startsWith('-') ? parts[++i] : true;
+      args[key]=val;
+    } else if (p.startsWith('-') && p.length>1){
+      // single dash flags
+      const key = p.replace(/^-+/,'');
+      const val = parts[i+1] && !parts[i+1].startsWith('-') ? parts[++i] : true;
+      args[key]=val;
+    } else {
+      args._.push(p);
+    }
+  }
+  return args;
+}
+
+async function collectMultilineInput(){
+  // instruct user to paste multi-line snippet into the input box, end with END
+  await typeOutput(['(Paste your HTML snippet into the input box. When you are done, type a single line with END and press Enter.)']);
+  const lines = [];
+  while (true){
+    const line = await readLine();
+    if (line.trim().toUpperCase() === 'END') break;
+    lines.push(line);
+  }
+  return lines.join('\n');
+}
+
+function readLine(){
+  return new Promise(resolve=>{
+    const handler = (e)=>{
+      if (e.key === 'Enter'){
+        const val = input.value;
+        input.value='';
+        appendPrompt(val);
+        document.removeEventListener('keydown', handler);
+        resolve(val);
+      }
     };
+    document.addEventListener('keydown', handler);
+  });
+}
 
-    // Handle login
-    function doLogin() {
-      const val = loginInput.value.trim();
-      if (val === ACCESS_KEY) {
-        loginScreen.style.display = 'none';
-        terminal.style.display = 'flex';
-        terminalInput.disabled = false;
-        terminalInput.focus();
-        playGlitchSound();
-        showWelcome();
-      } else {
-        alert('Access Denied! Wrong key.');
-        loginInput.value = '';
-        loginInput.focus();
-      }
-    }
+async function simulateWhois(parts){
+  const domain = parts[1] || 'example.com';
+  await typeOutput([`Simulated WHOIS for ${domain}`]);
+  await typeOutput({type:'progress', label:'Querying registry (simulated)', to: 100, time: 800});
+  await typeOutput([
+    `Domain: ${domain}`,
+    `Registrar: ${pick(['NameCheap','GoTLD','NetRegistry','SimRegistrar'])}`,
+    `Status: active`,
+    `Registrant Country: ${Location().split(', ').pop() || 'Unknown'}`
+  ]);
+}
 
-    loginBtn.addEventListener('click', doLogin);
-    loginInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') doLogin();
-    });
+async function simulateTrace(parts){
+  const target = parts[1] || IP();
+  await typeOutput([`Simulated traceroute to ${target}`]);
+  await typeOutput({type:'progress', label:'Tracing path', to: 100, time: 1200});
+  const hops = randInt(4,10);
+  const hopLines=[];
+  for (let i=1;i<=hops;i++){
+    hopLines.push(`${i}\t${IP()}\t${randInt(10,200)} ms`);
+  }
+  await typeOutput(hopLines);
+}
 
-    // Show welcome message and initial help
-    function showWelcome() {
-      const intro = [
-        '👽 Welcome to EMPEROR CODE UNIT 모 - Hacker Console',
-        'Type "help" to view available commands.'
-      ];
-      intro.forEach(line => {
-        appendOutput(line);
-      });
-    }
+/* small utilities */
+function pickN(arr,n){ const cp = arr.slice(); const out=[]; while(out.length<n && cp.length){ out.push(cp.splice(Math.floor(Math.random()*cp.length),1)[0]); } return out; }
 
-    // Append a line to terminal output
-    function appendOutput(text) {
-      const p = document.createElement('p');
-      p.textContent = text;
-      terminalOutput.appendChild(p);
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    }
+(async function bootSplash(){
+  await typeOutput([
+    "THUGKEED SIM CONSOLE v1.2 (visual simulation only)",
+    "NOTICE: This environment is a simulation — network scanning or attacks are performed.",
+    "",
+    `Sim mode: realistic timings = ${realisticMode.checked ? 'ON' : 'OFF'}`,
+    ""
+  ]);
+  const loc = Location();
+  await typeOutput([`Simulated local location: ${loc}`]);
+})();
 
-    // Run a command from terminal or button
-    function runCommand(command) {
-      if (!command) return;
-      if (command === 'clear') {
-        terminalOutput.innerHTML = '';
-        return;
-      }
-      const response = fakeCommands[command] || [`Unknown command: ${command}`];
-      response.forEach(line => appendOutput(line));
-      playBeep();
-    }
+/* helper for random */
+function pickOne(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-    // Handle terminal input enter key
-    terminalInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const cmd = terminalInput.value.trim();
-        runCommand(cmd);
-        terminalInput.value = '';
-      }
-    });
-
-    // Fake live stats updater
-    setInterval(() => {
-      if (terminal.style.display === 'flex') {
-        const cpu = Math.floor(Math.random() * 90) + 10;
-        const packets = Math.floor(Math.random() * 5000);
-        const logs = Math.floor(Math.random() * 100);
-        stats.innerHTML = `<span>CPU: ${cpu}%</span><span>Packets: ${packets}</span><span>Logs: ${logs}</span>`;
-      }
-    }, 4000);
-  </script>
+</script>
 </body>
-</html>
+  </html>
