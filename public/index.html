@@ -1,317 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>THUGKEED TECH BOT HOSTING NET</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THUGKEED TECH - Luxury Hub</title>
+  <style>
+    /* Reset + Font */
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{background:linear-gradient(135deg,#000,#1a1a1a,#4a4a4a);color:#fff;overflow-x:hidden;position:relative;}
+    
+    /* Header */
+    header{background:rgba(0,0,0,.85);padding:20px;text-align:center;position:sticky;top:0;z-index:100;border-bottom:2px solid #c5a34a;}
+    header h1{font-size:2.5rem;background:linear-gradient(90deg,#c5a34a,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:glow 3s infinite alternate;}
+    @keyframes glow{from{text-shadow:0 0 10px #c5a34a;}to{text-shadow:0 0 25px #ffd700;}}
+    nav{margin-top:15px;}
+    nav a{margin:0 15px;text-decoration:none;font-weight:bold;color:#c5a34a;transition:.3s;}
+    nav a:hover{color:#ffd700;}
 
-<style>
-/* Luxury animated theme CSS */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  overflow-x: hidden;
-  background: #0a0a0a;
-  color: #f5f5f5;
-  position: relative;
-}
+    /* Hero */
+    .hero{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:url('https://images.unsplash.com/photo-1549921296-3a531d8d1a6a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') no-repeat center/cover;text-align:center;position:relative;overflow:hidden;}
+    .hero::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);}
+    .hero-content{position:relative;z-index:2;}
+    .hero h2{font-size:3rem;background:linear-gradient(90deg,#c5a34a,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:slideIn 2s ease-in-out;}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-50px);}to{opacity:1;transform:translateY(0);}}
+    .hero p{margin-top:15px;font-size:1.2rem;color:#ddd;}
+    .btn{margin-top:20px;padding:12px 25px;background:linear-gradient(90deg,#c5a34a,#ffd700);border:none;border-radius:30px;color:#000;font-weight:bold;cursor:pointer;transition:transform .3s,box-shadow .3s;}
+    .btn:hover{transform:scale(1.1);box-shadow:0 0 20px #ffd700,0 0 40px #c5a34a;}
 
-/* Neon animated background */
-#bg-canvas {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  z-index:-1;
-  background: linear-gradient(135deg,#0a0a0a,#1a1a1a);
-}
+    /* Particle Canvas */
+    #particles{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
 
-h1 {
-  text-align: center;
-  font-weight: 700;
-  font-size: 2.5rem;
-  color: #ffd700;
-  margin-top: 20px;
-  text-shadow: 0 0 20px #ffd700, 0 0 30px #ffb700;
-  animation: glow 2s ease-in-out infinite alternate;
-}
+    /* Sections */
+    .section{padding:80px 20px;text-align:center;position:relative;z-index:2;}
+    .section h3{font-size:2rem;margin-bottom:20px;color:#ffd700;}
+    .cards{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;}
+    .card{background:#111;border:1px solid #c5a34a;border-radius:15px;padding:20px;width:280px;box-shadow:0 0 15px rgba(197,163,74,.5);transition:transform .3s,box-shadow .3s;}
+    .card:hover{transform:translateY(-10px);box-shadow:0 0 25px #ffd700,0 0 40px #c5a34a;}
+    .card h4{margin-bottom:10px;color:#ffd700;}
+    .card p{color:#ccc;}
 
-@keyframes glow {
-  0% { text-shadow: 0 0 10px #ffd700, 0 0 20px #ffb700; }
-  100% { text-shadow: 0 0 25px #ffd700, 0 0 40px #ffb700; }
-}
-
-input, button {
-  padding: 10px 15px;
-  border-radius: 12px;
-  border: none;
-  margin: 5px 0;
-  font-size: 1rem;
-  transition: 0.3s;
-}
-
-input {
-  width: 250px;
-  background: rgba(255,255,255,0.05);
-  color: #ffd700;
-  border: 1px solid #ffd700;
-}
-
-input:focus {
-  outline: none;
-  box-shadow: 0 0 10px #ffd700;
-}
-
-button {
-  background: linear-gradient(90deg, #ffd700, #ffa500);
-  color: #0a0a0a;
-  font-weight: 600;
-}
-
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px #ffd700;
-}
-
-.bot-card {
-  background: rgba(255, 215, 0, 0.05);
-  border: 1px solid #ffd700;
-  border-radius: 15px;
-  padding: 15px;
-  margin: 15px auto;
-  max-width: 400px;
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.6s forwards;
-}
-
-@keyframes fadeInUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.bot-card:hover {
-  box-shadow: 0 0 25px #ffd700;
-  transform: translateY(-5px);
-}
-
-.log-box {
-  background-color: #111;
-  color: #ffd700;
-  font-family: monospace;
-  height: 120px;
-  overflow-y: auto;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ffd700;
-  transition: 0.3s;
-}
-
-a {
-  color: #ffd700;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.login-container, .register-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 80vh;
-}
-
-input, button {
-  animation: fadeIn 1s ease forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Particle styles */
-.particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: #ffd700;
-  border-radius: 50%;
-  opacity: 0.7;
-  animation: floatParticle 10s linear infinite;
-}
-
-@keyframes floatParticle {
-  0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity:0.7; }
-  50% { opacity:1; }
-  100% { transform: translateY(-20px) translateX(50px) scale(1); opacity:0; }
-}
-</style>
+    /* Footer */
+    footer{background:#000;padding:30px;text-align:center;border-top:2px solid #c5a34a;}
+    footer p{color:#aaa;}
+    footer a{color:#c5a34a;margin:0 10px;text-decoration:none;}
+    footer a:hover{color:#ffd700;}
+  </style>
 </head>
 <body>
-<canvas id="bg-canvas"></canvas>
-<div id="root"></div>
+  <!-- Particle Canvas -->
+  <canvas id="particles"></canvas>
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-/* JS logic for login, dashboard, bots, same as previous */
-const root = document.getElementById('root');
-let token = localStorage.getItem('token');
-let socket;
+  <header>
+    <h1>⚡ THUGKEED TECH ⚡</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-// --- Particle background ---
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-for(let i=0;i<100;i++){
-  particles.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    r: Math.random()*3+1,
-    dx: (Math.random()-0.5)*0.5,
-    dy: (Math.random()-0.5)*0.5
-  });
-}
-
-function animateParticles(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle="#ffd700";
-    ctx.fill();
-    p.x+=p.dx;
-    p.y+=p.dy;
-    if(p.x<0)p.x=canvas.width;
-    if(p.x>canvas.width)p.x=0;
-    if(p.y<0)p.y=canvas.height;
-    if(p.y>canvas.height)p.y=0;
-  });
-  requestAnimationFrame(animateParticles);
-}
-animateParticles();
-
-// --- Existing login/dashboard/bot logic ---
-function renderLogin() {
-  root.innerHTML = `
-    <div class="login-container">
-      <h1>THUGKEED TECH BOT HOSTING NET</h1>
-      <input id="email" placeholder="Email" />
-      <input id="password" type="password" placeholder="Password"/>
-      <button id="loginBtn">Login</button>
-      <p>Don't have account? <a href="#" id="showRegister">Register</a></p>
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Welcome to THUGKEED TECH</h2>
+      <p>Luxury. Power. Innovation. — All by Owner THUGKEED.</p>
+      <button class="btn">Explore Now</button>
     </div>
-  `;
-  document.getElementById('loginBtn').onclick = async () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    try {
-      const res = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
-      const data = await res.json();
-      if(data.token){ token = data.token; localStorage.setItem('token', token); renderDashboard(); } 
-      else alert(data.message);
-    } catch(e){ alert(e); }
-  }
-  document.getElementById('showRegister').onclick = () => renderRegister();
-}
+  </section>
 
-function renderRegister() {
-  root.innerHTML = `
-    <div class="register-container">
-      <h1>Register</h1>
-      <input id="username" placeholder="Username"/>
-      <input id="email" placeholder="Email"/>
-      <input id="password" type="password" placeholder="Password"/>
-      <button id="registerBtn">Register</button>
-      <p>Already have account? <a href="#" id="showLogin">Login</a></p>
+  <section class="section" id="about">
+    <h3>About THUGKEED</h3>
+    <p>THUGKEED TECH is a luxury-driven developer hub bringing next-level web services, bots, and tech tools. Built with passion, branded with style, and owned fully by <b>THUGKEED</b>.</p>
+  </section>
+
+  <section class="section" id="projects">
+    <h3>Our Legendary Projects</h3>
+    <div class="cards">
+      <div class="card">
+        <h4>⚡ THUGKEED-XMD</h4>
+        <p>A powerful WhatsApp bot with commands, automation, and AI integration.</p>
+      </div>
+      <div class="card">
+        <h4>💻 THUGKEED PANEL</h4>
+        <p>Luxury hosting panel to deploy & manage bots seamlessly.</p>
+      </div>
+      <div class="card">
+        <h4>🎶 THUGKEED MP3 JUICE</h4>
+        <p>Download your favorite songs & videos with style.</p>
+      </div>
+      <div class="card">
+        <h4>👾 HACKLAB v2</h4>
+        <p>Simulated dark-web tools with realistic animations & hacking utilities.</p>
+      </div>
     </div>
-  `;
-  document.getElementById('registerBtn').onclick = async () => {
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    try {
-      const res = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username,email,password }) });
-      const data = await res.json();
-      alert(data.message || "Registered!");
-      renderLogin();
-    } catch(e){ alert(e); }
-  }
-  document.getElementById('showLogin').onclick = () => renderLogin();
-}
+  </section>
 
-async function fetchBots() {
-  const res = await fetch('/api/bot/mybots', { headers:{ Authorization:`Bearer ${token}` }});
-  return await res.json();
-}
+  <section class="section" id="contact">
+    <h3>Contact & Connect</h3>
+    <p>Stay connected with the THUGKEED community.</p>
+    <p>
+      <a href="https://github.com/thugkeedxxx" target="_blank">GitHub</a> |
+      <a href="https://whatsapp.com/channel/0029VbB7a9v6LwHqDUERef0M" target="_blank">WhatsApp Channel</a>
+    </p>
+  </section>
 
-function renderDashboard() {
-  root.innerHTML = `
-    <h1>THUGKEED TECH BOT HOSTING NET</h1>
-    <input id="botName" placeholder="New Bot Name"/>
-    <button id="createBot">Create Bot</button>
-    <input type="file" id="fileInput"/>
-    <button id="uploadFile">Upload File</button>
-    <div id="botsContainer"></div>
-  `;
-  document.getElementById('createBot').onclick = async () => {
-    const name = document.getElementById('botName').value;
-    if(!name) return alert("Enter bot name");
-    await fetch('/api/bot/create', { method:'POST', headers:{'Content-Type':'application/json', Authorization:`Bearer ${token}`}, body:JSON.stringify({name}) });
-    loadBots();
-  }
-  document.getElementById('uploadFile').onclick = async () => {
-    const file = document.getElementById('fileInput').files[0];
-    if(!file) return alert("Select file");
-    const formData = new FormData();
-    formData.append('file', file);
-    await fetch('/api/file/upload', { method:'POST', headers:{ Authorization:`Bearer ${token}` }, body: formData });
-    alert("Uploaded!");
-  }
+  <footer>
+    <p>© 2025 THUGKEED TECH — All Rights Reserved.</p>
+    <p>Powered by <b>THUGKEED</b></p>
+  </footer>
 
-  socket = io();
-  socket.emit("join-room",{ userId: token });
-  socket.on("bot-log", ({ botId, log }) => {
-    const logBox = document.getElementById(`log-${botId}`);
-    if(logBox) logBox.innerText += log;
-  });
-  socket.on("bot-status", ({ botId, status }) => {
-    const statusEl = document.getElementById(`status-${botId}`);
-    if(statusEl) statusEl.innerText = status;
-  });
+  <!-- Particle JS -->
+  <script>
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particlesArray;
 
-  loadBots();
-}
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-async function loadBots() {
-  const bots = await fetchBots();
-  const container = document.getElementById('botsContainer');
-  container.innerHTML = '';
-  bots.forEach(bot => {
-    const div = document.createElement('div');
-    div.className = 'bot-card';
-    div.innerHTML = `
-      <h3>${bot.name}</h3>
-      <p>Status: <span id="status-${bot._id}">${bot.status}</span></p>
-      <button onclick="startBot('${bot._id}')">Start</button>
-      <button onclick="stopBot('${bot._id}')">Stop</button>
-      <pre class="log-box" id="log-${bot._id}"></pre>
-    `;
-    container.appendChild(div);
-  });
-}
+    window.addEventListener('resize',()=>{
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init();
+    });
 
-window.startBot = async (id) => { await fetch(`/api/bot/start/${id}`, { method:'POST', headers:{ Authorization:`Bearer ${token}` } }); loadBots(); }
-window.stopBot = async (id) => { await fetch(`/api/bot/stop/${id}`, { method:'POST', headers:{ Authorization:`Bearer ${token}` } }); loadBots(); }
+    class Particle{
+      constructor(){
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random()*3 + 1;
+        this.speedX = Math.random()*1 - 0.5;
+        this.speedY = Math.random()*1 - 0.5;
+      }
+      update(){
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if(this.x > canvas.width) this.x = 0;
+        if(this.x < 0) this.x = canvas.width;
+        if(this.y > canvas.height) this.y = 0;
+        if(this.y < 0) this.y = canvas.height;
+      }
+      draw(){
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+        ctx.fill();
+      }
+    }
 
-token ? renderDashboard() : renderLogin();
-</script>
+    function init(){
+      particlesArray = [];
+      let numberOfParticles = 100;
+      for(let i=0;i<numberOfParticles;i++){
+        particlesArray.push(new Particle());
+      }
+    }
+
+    function animate(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=0;i<particlesArray.length;i++){
+        particlesArray[i].update();
+        particlesArray[i].draw();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+  </script>
 </body>
   </html>
